@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.AppCenter.Analytics;
 using Xamarin.Forms;
 
 namespace DemoApp
@@ -23,6 +23,11 @@ namespace DemoApp
             if (item == null)
                 return;
 
+            Analytics.TrackEvent("ItemsPage.OnItemSelected",
+                                 new Dictionary<string, string> {
+                                    { "Item", item.Text }   
+                                    });
+
             await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item)));
 
             // Manually deselect item
@@ -40,6 +45,16 @@ namespace DemoApp
 
             if (viewModel.Items.Count == 0)
                 viewModel.LoadItemsCommand.Execute(null);
+
+            Analytics.TrackEvent("ItemsPage.OnAppearing");
+
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Analytics.TrackEvent("ItemsPage.OnDisappearing");
+
         }
     }
 }
